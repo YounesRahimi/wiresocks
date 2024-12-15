@@ -42,7 +42,8 @@ services:
       - net.ipv4.conf.all.src_valid_mark=1
     ports:
       # Because we are going to use this containers network for wireguard we have to port forward here
-      - ${WG_UDP_PORT}:${WG_UDP_PORT}/udp
+      - ${WG_UDP_PORT}:51820/udp
+      # - ${WG_TCP_PORT}:51821/tcp
     restart: unless-stopped
 
   wireguard:
@@ -58,14 +59,14 @@ services:
     environment:
       - PUID=1000
       - PGID=1000
-      - TZ=Europe/London
+      - TZ=America/New_York
       - SERVERPORT=${WG_UDP_PORT}
       # These are just settings that get populated into the client configs, you can edit the config after creation
       - SERVERURL=${WG_HOST}
       - PEERS=${WG_PEERS}
       - INTERNAL_SUBNET=10.13.13.0
       - ALLOWEDIPS=10.13.13.0/24,${TARGET_ROUTES}
-      - TARGET_ROOT_DOMAINS=${TARGET_ROOT_DOMAINS}
+      # - TARGET_ROOT_DOMAINS=${TARGET_ROOT_DOMAINS}
     volumes:
       # this is where the wireguard peer configs will live
       - ./config:/config
